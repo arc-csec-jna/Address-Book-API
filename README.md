@@ -69,20 +69,17 @@ The application follows a lightweight layered architecture:
                     │    FastAPI API   │
                     │     Routes       │
                     └────────┬─────────┘
-                             │
                              ▼
                     ┌──────────────────┐
                     │     Services     │
                     │ Business Logic   │
                     └──────┬─────┬─────┘
-                           │     │
               ┌────────────┘     └──────────────┐
               ▼                                 ▼
     ┌──────────────────┐              ┌──────────────────┐
     │   Repository     │              │ External Services│
     │  SQLAlchemy/DB   │              │   Geocoding      │
     └────────┬─────────┘              └──────────────────┘
-             │
              ▼
     ┌──────────────────┐
     │      SQLite      │
@@ -104,20 +101,14 @@ The main separation of responsibilities is:
 ```text
 The application uses a simple layered structure:
 HTTP Request
-     │
      ▼
  FastAPI Routes
-     │
      ▼
  Address Service
-     │
-     ├──────────────► Geocoding Service
-     │
-     ├──────────────► Geo Calculations
-     │
+     ├─────► Geocoding Service
+     ├─────► Geo Calculations
      ▼
  Address Repository
-     │
      ▼
    SQLite
 ```
@@ -196,16 +187,12 @@ Nearby searches use an existing address as the reference point:
 The radius is specified in kilometers.
 ```text
 Reference Address
-       │
        ▼
 Bounding Box -  we define the limits of the boundaries of the coordinates
-       │
        ▼
 Candidate Addresses -  we extract addresses within the boundaries
-       │
        ▼
 Haversine Distance - we calculate exact distance using the haversine distance
-       │
        ▼
 Addresses within radius
 ```
