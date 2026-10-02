@@ -5,6 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class GeocodingService():
+    """ Service to get coordinates from an address using OpenStreetMap's Nominatim API. """
     def adress_get_coordinates(self,address_data):
         url = "https://nominatim.openstreetmap.org/search"
         headers = {

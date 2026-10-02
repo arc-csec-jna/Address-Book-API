@@ -18,9 +18,8 @@ class AddressService():
         self.geocalculations = geocalculations
 
     def create_address(self,address_data:AddressCreate):
-        
+        """address creation service, which takes in address data, geocodes it, and saves it to the database"""
         logger.info("Creating address: %s", address_data.name)
-        """creating the address"""
         address = Address(
                 name = address_data.name,
                 street =address_data.street,
@@ -58,6 +57,7 @@ class AddressService():
         return self.address_repository.get_address_by_id(id)
 
     def update_address(self, address_id, address_data):
+        """Update an existing address with new data, including geocoding if location fields change. """
         verify_address= self.address_repository.get_address_by_id(address_id)
         if not verify_address:
             raise HTTPException(status_code=404, detail="Address not found")
@@ -103,6 +103,7 @@ class AddressService():
         return address_update
 
     def delete_address(self, address_id):
+        """Delete an address by its ID."""
         verify= self.address_repository.get_address_by_id(address_id)
         if not verify:
             raise HTTPException(status_code=404, detail="Address not found")
@@ -112,6 +113,7 @@ class AddressService():
         return {"message": "Address deleted successfully"}
      
     def get_nearby_addresses(self, address_id,radius):
+        """Get addresses within a specified radius (in kilometers) of a given address ID."""
         logger.info(
             "Nearby search: address_id=%s, radius_km=%s",
             address_id,
