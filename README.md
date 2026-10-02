@@ -18,34 +18,88 @@ A small FastAPI backend for managing addresses with geocoded coordinates and nea
 - OpenStreetMap Nominatim for geocoding
 
 ## Project Structure
+## Project Structure
 
+```text
 AddressBook-ProofofConcept/
-├── alembic/
+│
+├── alembic/                         # Database migrations
 │   └── versions/
+│
 ├── app/
-│   ├── core/
-│   │   ├── config.py
-│   │   ├── database.py
-│   │   └── dependencies.py
-│   ├── models/
+│   ├── core/                        # Application configuration & infrastructure
+│   │   ├── config.py               # Environment/settings configuration
+│   │   ├── database.py             # SQLAlchemy engine & database session
+│   │   └── dependencies.py         # FastAPI dependency injection
+│   │
+│   ├── models/                      # SQLAlchemy database models
 │   │   └── address.py
-│   ├── repositories/
+│   │
+│   ├── repositories/                # Database access layer
+│   │   └── address.py              # Address CRUD persistence
+│   │
+│   ├── routes/                      # HTTP/API layer
+│   │   └── address.py              # Address endpoints
+│   │
+│   ├── schemas/                     # Pydantic request/response models
 │   │   └── address.py
-│   ├── routes/
-│   │   └── address.py
-│   ├── schemas/
-│   │   └── address.py
-│   ├── services/
-│   │   ├── address_service.py
-│   │   ├── geocoding.py
-│   │   └── geo_calc.py
-│   └── main.py
-├── tests/
-├── data/
-├── .env
-├── alembic.ini
-├── pyproject.toml
-└── README.md
+│   │
+│   ├── services/                    # Application/business logic
+│   │   ├── address_service.py      # Address operations & orchestration
+│   │   ├── geocoding.py            # External geocoding integration
+│   │   └── geo_calc.py             # Distance & bounding-box calculations
+│   │
+│   └── main.py                      # FastAPI application entry point
+│
+├── tests/                            # Automated tests
+│
+├── data/                             # Local SQLite database files
+│
+├── .env                              # Local environment configuration
+├── alembic.ini                       # Alembic configuration
+├── pyproject.toml                    # Project & dependency configuration
+└── README.md                         # Project documentation
+```
+
+### Architecture
+
+The application follows a lightweight layered architecture:
+
+```text
+                    ┌──────────────────┐
+                    │    FastAPI API   │
+                    │     Routes       │
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │     Services     │
+                    │ Business Logic   │
+                    └──────┬─────┬─────┘
+                           │     │
+              ┌────────────┘     └──────────────┐
+              ▼                                 ▼
+    ┌──────────────────┐              ┌──────────────────┐
+    │   Repository     │              │ External Services│
+    │  SQLAlchemy/DB   │              │   Geocoding      │
+    └────────┬─────────┘              └──────────────────┘
+             │
+             ▼
+    ┌──────────────────┐
+    │      SQLite      │
+    └──────────────────┘
+```
+
+The main separation of responsibilities is:
+
+- **Routes** — handle HTTP requests and responses.
+- **Services** — coordinate application logic and business rules.
+- **Repositories** — handle database persistence.
+- **Models** — define the database structure.
+- **Schemas** — validate API input and shape API responses.
+- **Geocoding** — isolates the external geocoding provider.
+- **Geo calculations** — handles geographic calculations independently from the API and database layers.
+- **Core** — contains shared application infrastructure and dependency wiring.
 
 ## Architecture
 
