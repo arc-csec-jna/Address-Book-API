@@ -1,13 +1,12 @@
 from fastapi import HTTPException
-
 from app.repositories.address import AddressRepository
-
 from app.schemas.address import AddressCreate
-
 from app.models.address import Address
-
 from app.services.geocoding import GeocodingService
 from app.services.geo_calc import GeoCalculations
+import logging
+
+logger = logging.getLogger(__name__)
 
 class AddressService():
     def __init__(
@@ -19,6 +18,8 @@ class AddressService():
         self.geocalculations = geocalculations
 
     def create_address(self,address_data:AddressCreate):
+        
+        logger.info("Creating address: %s", address_data.name)
         """creating the address"""
         address = Address(
                 name = address_data.name,
@@ -39,6 +40,7 @@ class AddressService():
         coordinates =  self.geocoding_service.adress_get_coordinates(geo_service_data)
 
         if not coordinates:
+            logger.error("Failed to get coordinates for address: %s", address_data.name)
             raise HTTPException(
                 status_code=400,
                 detail="Failed to get coordinates for the provided address"
@@ -46,6 +48,7 @@ class AddressService():
 
         address.latitude = coordinates["latitude"]
         address.longitude = coordinates["longitude"]
+        logger.info("Address created: id=%s, name=%s", address.id, address.name)
         return self.address_repository.create_address(address)
 
     def get_addresses(self):
@@ -109,6 +112,12 @@ class AddressService():
         return {"message": "Address deleted successfully"}
      
     def get_nearby_addresses(self, address_id,radius):
+        logger.info(
+            "Nearby search: address_id=%s, radius_km=%s",
+            address_id,
+            radius
+        )
+        
         verify= self.address_repository.get_address_by_id(address_id)
         if not verify:
             raise HTTPException(status_code=404, detail="Address not found")
