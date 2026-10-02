@@ -29,5 +29,5 @@ htmlcov/
 Thumbs.db
 
 # Docs
-.md
+*.md
 *.egg-info/

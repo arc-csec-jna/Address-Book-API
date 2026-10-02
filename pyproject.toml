@@ -27,4 +27,4 @@ dev = [
 where = ["."]
 
 [tool.pytest.ini_options]
-testpaths = ["Tests"]
+testpaths = ["tests"]
