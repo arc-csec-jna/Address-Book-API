@@ -18,7 +18,6 @@ A small FastAPI backend for managing addresses with geocoded coordinates and nea
 - OpenStreetMap Nominatim for geocoding
 
 ## Project Structure
-## Project Structure
 
 ```text
 AddressBook-ProofofConcept/
@@ -102,7 +101,7 @@ The main separation of responsibilities is:
 - **Core** — contains shared application infrastructure and dependency wiring.
 
 ## Architecture
-
+```text
 The application uses a simple layered structure:
 HTTP Request
      │
@@ -121,7 +120,7 @@ HTTP Request
      │
      ▼
    SQLite
-
+```
 ### Routes
 Responsible for HTTP concerns such as request validation, response models, and dependency injection.
 
