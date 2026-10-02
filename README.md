@@ -195,7 +195,7 @@ Nearby searches use an existing address as the reference point:
     GET /addresses/{address_id}/nearby?radius=10
 
 The radius is specified in kilometers.
-
+```text
 Reference Address
        │
        ▼
@@ -209,7 +209,7 @@ Haversine Distance - we calculate exact distance using the haversine distance
        │
        ▼
 Addresses within radius
-
+```
 ## Testing
 
 Run the test suite with:  pytest
