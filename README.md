@@ -61,31 +61,46 @@ AddressBook-ProofofConcept/
 ```
 
 ### Architecture
-
 The application follows a lightweight layered architecture:
 
-```text
-                    ┌──────────────────┐
-                    │    FastAPI API   │
-                    │     Routes       │
-                    └────────┬─────────┘
-                             ▼
-                    ┌──────────────────┐
-                    │     Services     │
-                    │ Business Logic   │
-                    └──────┬─────┬─────┘
-              ┌────────────┘     └──────────────┐
-              ▼                                 ▼
-    ┌──────────────────┐              ┌──────────────────┐
-    │   Repository     │              │ External Services│
-    │  SQLAlchemy/DB   │              │   Geocoding      │
-    └────────┬─────────┘              └──────────────────┘
-             ▼
-    ┌──────────────────┐
-    │      SQLite      │
-    └──────────────────┘
-```
+```mermaid
+flowchart TD
+    Client["API Client"]
 
+    subgraph API["API Layer"]
+        Routes["FastAPI Routes"]
+        Schemas["Pydantic Schemas"]
+    end
+
+    subgraph Application["Application Layer"]
+        Service["Address Service"]
+        Geo["Geo Calculations"]
+    end
+
+    subgraph Persistence["Persistence Layer"]
+        Repository["Address Repository"]
+        Model["SQLAlchemy Models"]
+        Database[("SQLite")]
+    end
+
+    subgraph External["External Integration"]
+        Geocoder["Geocoding Service"]
+        Nominatim["OpenStreetMap Nominatim"]
+    end
+
+    Client --> Routes
+    Routes --> Schemas
+    Routes --> Service
+
+    Service --> Repository
+    Service --> Geo
+    Service --> Geocoder
+
+    Repository --> Model
+    Model --> Database
+
+    Geocoder --> Nominatim
+```
 The main separation of responsibilities is:
 
 - **Routes** — handle HTTP requests and responses.
@@ -96,21 +111,24 @@ The main separation of responsibilities is:
 - **Geocoding** — isolates the external geocoding provider.
 - **Geo calculations** — handles geographic calculations independently from the API and database layers.
 - **Core** — contains shared application infrastructure and dependency wiring.
-
 ## Architecture
-```text
 The application uses a simple layered structure:
-HTTP Request
-     ▼
- FastAPI Routes
-     ▼
- Address Service
-     ├─────► Geocoding Service
-     ├─────► Geo Calculations
-     ▼
- Address Repository
-     ▼
-   SQLite
+```mermaid
+flowchart TD
+    Request["HTTP Request"]
+    Routes["FastAPI Routes"]
+    Service["Address Service"]
+    Geocoding["Geocoding Service"]
+    Geo["Geo Calculations"]
+    Repository["Address Repository"]
+    Database[("SQLite")]
+
+    Request --> Routes
+    Routes --> Service
+    Service --> Geocoding
+    Service --> Geo
+    Service --> Repository
+    Repository --> Database
 ```
 ### Routes
 Responsible for HTTP concerns such as request validation, response models, and dependency injection.
